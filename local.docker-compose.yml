@@ -1,0 +1,38 @@
+services:
+  db:
+    image: public.ecr.aws/docker/library/postgres:16-alpine
+    container_name: db
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: appdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data:Z
+
+  app:
+    build: { context: . }
+    container_name: app
+    working_dir: /app
+    user: root
+    ports:
+      - "8080:8080"
+    command: sh -lc "sh ./gradlew bootRun --no-daemon"
+    environment:
+      GRADLE_USER_HOME: /tmp/gradle
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/appdb
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD: app
+    depends_on:
+      - db
+    volumes:
+      - ./:/app
+      - gradle_project:/app/.gradle
+      - gradle_cache:/tmp/gradle
+
+
+volumes:
+  db_data:
+  gradle_project:
+  gradle_cache:
