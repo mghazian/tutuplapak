@@ -22,6 +22,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         return FileUploadResponseDto.builder()
                 .fileId("1")
                 .fileUri(result.getPresignedUrl())
+                .fileThumbnailUri(result.getPresignedUrl())
                 .build();
     }
 }
