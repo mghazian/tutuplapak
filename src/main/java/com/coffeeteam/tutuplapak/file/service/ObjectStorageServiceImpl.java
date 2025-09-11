@@ -37,8 +37,26 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         return String.format("%s-%s.%s", file.getName(), UUID.randomUUID(), extension);
     }
 
+    private void ensureBucket() {
+        try {
+            boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder()
+                    .bucket(BUCKET_NAME)
+                    .build());
+
+            if ( !bucketExists ) {
+                minioClient.makeBucket(MakeBucketArgs.builder()
+                        .bucket(BUCKET_NAME)
+                        .build());
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to prepare bucket: " + BUCKET_NAME);
+        }
+    }
+
     @Override
     public UploadResultDto upload(MultipartFile file) {
+        ensureBucket();
 
         try (InputStream is = file.getInputStream()) {
             String objectname = constructObjectName(file);
