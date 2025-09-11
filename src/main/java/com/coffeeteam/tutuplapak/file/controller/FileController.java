@@ -20,6 +20,7 @@ public class FileController {
         this.fileUploadService = fileUploadService;
     }
 
+    @PostMapping
     ResponseEntity<FileUploadResponseDto> upload (
             HttpServletRequest httpServletRequest,
             MultipartFile file
