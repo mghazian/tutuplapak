@@ -2,11 +2,20 @@ package com.coffeeteam.tutuplapak.file.service;
 
 import com.coffeeteam.tutuplapak.file.dto.UploadResultDto;
 import com.coffeeteam.tutuplapak.minio.MinioProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.minio.*;
+import io.minio.errors.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -37,6 +46,26 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         return String.format("%s-%s.%s", file.getName(), UUID.randomUUID(), extension);
     }
 
+    private String getPublicBucketPolicyJson() {
+        Map<String, Object> json = new HashMap<>();
+        json.put("Version", "2012-10-17");
+        json.put("Statement", List.of(
+                Map.of(
+                        "Action", "s3:GetObject",
+                        "Effect", "Allow",
+                        "Principal", "*",
+                        "Resource", "arn:aws:s3:::" + BUCKET_NAME + "/*"
+                )
+        ));
+
+        try {
+            ObjectMapper om = new ObjectMapper();
+            return om.writeValueAsString(json);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void ensureBucket() {
         try {
             boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder()
@@ -47,10 +76,15 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
                 minioClient.makeBucket(MakeBucketArgs.builder()
                         .bucket(BUCKET_NAME)
                         .build());
+
+                minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
+                        .bucket(BUCKET_NAME)
+                        .config(getPublicBucketPolicyJson())
+                        .build());
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to prepare bucket: " + BUCKET_NAME);
+            throw new RuntimeException("Failed to prepare bucket: " + BUCKET_NAME, e);
         }
     }
 
