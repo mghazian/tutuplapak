@@ -1,9 +1,15 @@
-package com.coffeeteam.tutuplapak.auth;
+package com.coffeeteam.tutuplapak.auth.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.coffeeteam.tutuplapak.auth.UserClaim;
+import com.coffeeteam.tutuplapak.auth.dto.AuthResponseBody;
+import com.coffeeteam.tutuplapak.auth.dto.EmailAuthRequestBody;
+import com.coffeeteam.tutuplapak.auth.dto.PhoneAuthRequestBody;
+import com.coffeeteam.tutuplapak.auth.repository.AuthRepository;
+import com.coffeeteam.tutuplapak.auth.security.JwtUtil;
 import com.coffeeteam.tutuplapak.core.entity.User;
 import com.coffeeteam.tutuplapak.core.exceptions.ConflictException;
 import com.coffeeteam.tutuplapak.core.exceptions.InvalidCredentialsException;
@@ -47,7 +53,7 @@ public class AuthService {
     public AuthResponseBody emailLogin(EmailAuthRequestBody requestBody) throws InvalidCredentialsException {
         User authUser = authRepository
                         .findByEmail(requestBody.getEmail())
-                        .orElseThrow(() -> new InvalidCredentialsException());
+                        .orElseThrow(() -> new EntityNotFoundException("user not found"));
         if (!passwordEncoder.matches(requestBody.getPassword(), authUser.getPassword())) throw new InvalidCredentialsException();
         String token = jwtUtil.generateToken(new UserClaim(
             authUser.getId(),
@@ -77,8 +83,8 @@ public class AuthService {
             savedUser.getEmail() 
         ));
         return new AuthResponseBody(
-            savedUser.getEmail(),
-            savedUser.getPhone() != null ? savedUser.getPhone() : "",
+            savedUser.getEmail() != null ? savedUser.getEmail() : "",
+            savedUser.getPhone(),
             token
         );
     }
@@ -94,8 +100,8 @@ public class AuthService {
             authUser.getEmail() 
         ));
         return new AuthResponseBody(
-            authUser.getEmail(),
-            authUser.getPhone() != null ? authUser.getPhone() : "",
+            authUser.getEmail() != null ? authUser.getEmail() : "",
+            authUser.getPhone(),
             token
         );
     }

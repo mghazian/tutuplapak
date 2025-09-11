@@ -1,4 +1,4 @@
-package com.coffeeteam.tutuplapak.auth;
+package com.coffeeteam.tutuplapak.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

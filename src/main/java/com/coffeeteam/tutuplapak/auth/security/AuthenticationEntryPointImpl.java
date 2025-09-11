@@ -1,4 +1,4 @@
-package com.coffeeteam.tutuplapak.auth;
+package com.coffeeteam.tutuplapak.auth.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

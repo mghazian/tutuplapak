@@ -1,10 +1,12 @@
-package com.coffeeteam.tutuplapak.auth;
+package com.coffeeteam.tutuplapak.auth.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.coffeeteam.tutuplapak.auth.UserClaim;
 import com.coffeeteam.tutuplapak.core.entity.User;
 
 import javax.crypto.SecretKey;

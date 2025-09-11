@@ -1,4 +1,4 @@
-package com.coffeeteam.tutuplapak.auth;
+package com.coffeeteam.tutuplapak.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

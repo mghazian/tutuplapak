@@ -2,7 +2,10 @@ package com.coffeeteam.tutuplapak.core.entity;
 
 import java.time.OffsetDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -18,14 +21,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // or AUTO, SEQUENCE, etc.
     private Long id;
     private String phone;
     private String email;
     private String password;
     private Long imageId;
-    private String bankAccountName;
-    private String bankAccountHolder;
-    private String bankAccountNumber;
+    @Column(nullable = false)
+    private String bankAccountName = "";
+    @Column(nullable = false)
+    private String bankAccountHolder = "";
+    @Column(nullable = false)
+    private String bankAccountNumber = "";
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 

@@ -1,4 +1,4 @@
-package com.coffeeteam.tutuplapak.auth;
+package com.coffeeteam.tutuplapak.auth.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,14 +17,12 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthFilter;
+    
     @Autowired
     private AuthenticationEntryPointImpl customAuthenticationEntryPoint;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)

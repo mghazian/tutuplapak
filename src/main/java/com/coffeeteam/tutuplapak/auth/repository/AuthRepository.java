@@ -1,4 +1,4 @@
-package com.coffeeteam.tutuplapak.auth;
+package com.coffeeteam.tutuplapak.auth.repository;
 
 import java.util.Optional;
 
@@ -14,9 +14,9 @@ public interface AuthRepository extends JpaRepository<User, Long>{
 
     @Query("""
         SELECT 
-            *
+            u
         FROM 
-            users u
+            User u
         WHERE
             u.email = :email        
     """
@@ -25,9 +25,9 @@ public interface AuthRepository extends JpaRepository<User, Long>{
 
     @Query("""
         SELECT 
-            *
+            u
         FROM 
-            users u
+            User u
         WHERE
             u.phone = :phone        
     """
@@ -36,9 +36,9 @@ public interface AuthRepository extends JpaRepository<User, Long>{
 
     @Query("""
         SELECT 
-            *
+            u
         FROM 
-            users u
+            User u
         WHERE
             u.phone = :phone
             AND u.email = :email        
