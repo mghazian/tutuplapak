@@ -1,8 +1,9 @@
 package com.coffeeteam.tutuplapak.file.service;
 
 import com.coffeeteam.tutuplapak.file.dto.UploadResultDto;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.io.InputStream;
 
 public interface ObjectStorageService {
-    UploadResultDto upload (MultipartFile file);
+    UploadResultDto upload(InputStream inputStream, String filename, long size, String contentType);
 }
