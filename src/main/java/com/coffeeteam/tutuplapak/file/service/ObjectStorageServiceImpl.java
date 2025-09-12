@@ -33,8 +33,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         this.minioProperties = minioProperties;
     }
 
-    private String constructObjectName(MultipartFile file) {
-        String[] split = file.getName().split("\\.");
+    private String constructObjectName(String filename) {
+        String[] split = filename.split("\\.");
         String extension = "";
 
         if ( split.length == 1 ) {
@@ -43,7 +43,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
             extension = split[ split.length - 1 ];
         }
 
-        return String.format("%s-%s.%s", file.getName(), UUID.randomUUID(), extension);
+        return String.format("%s-%s.%s", filename, UUID.randomUUID(), extension);
     }
 
     private String getPublicBucketPolicyJson() {
@@ -89,17 +89,17 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     }
 
     @Override
-    public UploadResultDto upload(MultipartFile file) {
+    public UploadResultDto upload(InputStream inputStream, String filename, long size, String contentType) {
         ensureBucket();
 
-        try (InputStream is = file.getInputStream()) {
-            String objectname = constructObjectName(file);
+        try {
+            String objectname = constructObjectName(filename);
             PutObjectArgs argument = PutObjectArgs.builder()
                     .bucket(BUCKET_NAME)
-                    .stream(is, file.getSize(), -1)
+                    .stream(inputStream, size, -1)
                     .region("us-east")
                     .object(objectname)
-                    .contentType(file.getContentType())
+                    .contentType(contentType)
                     .build();
 
             ObjectWriteResponse response = minioClient.putObject(argument);
@@ -108,8 +108,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
                     .builder()
                     .bucket(BUCKET_NAME)
                     .objectName(objectname)
-                    .contentType(file.getContentType())
-                    .size(file.getSize())
+                    .contentType(contentType)
+                    .size(size)
                     .etag(response.etag())
                     .presignedUrl("")
                     .build();

@@ -44,6 +44,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	implementation 'io.minio:minio:8.5.17'
+
+	implementation "net.coobird:thumbnailator:0.4.19"
 }
 
 tasks.named('test') {
