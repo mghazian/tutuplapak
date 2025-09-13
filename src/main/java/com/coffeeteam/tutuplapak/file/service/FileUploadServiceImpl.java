@@ -3,19 +3,24 @@ package com.coffeeteam.tutuplapak.file.service;
 import com.coffeeteam.tutuplapak.file.dto.FileUploadRequestDto;
 import com.coffeeteam.tutuplapak.file.dto.FileUploadResponseDto;
 import com.coffeeteam.tutuplapak.file.dto.UploadResultDto;
+import com.coffeeteam.tutuplapak.file.exception.FileInputInvalidException;
 import com.coffeeteam.tutuplapak.file.model.Image;
 import com.coffeeteam.tutuplapak.file.repository.ImageRepository;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.List;
 
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
 
     private final ObjectStorageService objectStorageService;
     private final ImageRepository imageRepository;
+    private final Tika tika;
 
     public FileUploadServiceImpl(
             ObjectStorageService objectStorageService,
@@ -23,6 +28,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     ) {
         this.objectStorageService = objectStorageService;
         this.imageRepository = imageRepository;
+        this.tika = new Tika();
     }
 
     private byte[] compress(MultipartFile file) throws IOException {
@@ -36,8 +42,28 @@ public class FileUploadServiceImpl implements FileUploadService {
         return os.toByteArray();
     }
 
+    boolean isFileTypeAcceptable(MultipartFile file) {
+        try {
+            String extension = tika.detect(file.getInputStream());
+
+            return List.of("image/jpg", "image/jpeg", "image/png").contains(extension);
+        } catch (IOException e) {
+            // TODO: Not good - should handle exception properly but acceptable for now
+            return false;
+        }
+    }
+
     @Override
     public FileUploadResponseDto upload(MultipartFile file) {
+        // Validate file
+        if ( ! isFileTypeAcceptable(file) ) {
+            throw new FileInputInvalidException("File type is invalid");
+        }
+
+        if ( file.getSize() > 100_000 ) {
+            throw new FileInputInvalidException("File size cannot be larger than 100KB");
+        }
+
         UploadResultDto result = null;
         UploadResultDto compressedResult = null;
         try (InputStream is = file.getInputStream()) {
