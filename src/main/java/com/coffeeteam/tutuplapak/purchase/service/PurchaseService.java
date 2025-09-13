@@ -3,6 +3,8 @@ package com.coffeeteam.tutuplapak.purchase.service;
 
 import com.coffeeteam.tutuplapak.core.entity.*;
 import com.coffeeteam.tutuplapak.core.repository.*;
+import com.coffeeteam.tutuplapak.file.model.Image;
+import com.coffeeteam.tutuplapak.file.repository.ImageRepository;
 import com.coffeeteam.tutuplapak.purchase.dto.PaymentProofRequest;
 import com.coffeeteam.tutuplapak.purchase.dto.PurchaseRequest;
 import com.coffeeteam.tutuplapak.purchase.dto.PurchaseResponse;

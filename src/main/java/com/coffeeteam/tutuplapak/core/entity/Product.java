@@ -1,5 +1,6 @@
 package com.coffeeteam.tutuplapak.core.entity;
 
+import com.coffeeteam.tutuplapak.file.model.Image;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
