@@ -71,13 +71,23 @@ public class PurchaseService {
     }
 
     private String getImageUri(Long imageId) {
-        // Implementasi sesuai kebutuhan, bisa dari database atau service lain
-        return imageId != null ? "http://example.com/images/" + imageId : "";
+        if (imageId == null) {
+            return "";
+        }
+
+        return imageRepository.findById(imageId)
+                .map(Image::getUri)
+                .orElse("");
     }
 
     private String getImageThumbnailUri(Long imageId) {
-        // Implementasi sesuai kebutuhan, bisa dari database atau service lain
-        return imageId != null ? "http://example.com/thumbnails/" + imageId : "";
+        if (imageId == null) {
+            return "";
+        }
+
+        return imageRepository.findById(imageId)
+                .map(Image::getThumbnailUri)
+                .orElse("");
     }
 
     private PurchaseResponse buildPurchaseResponse(Purchase purchase, List<PurchaseItem> purchaseItems) {
@@ -87,8 +97,8 @@ public class PurchaseService {
                 .sum();
 
         // Buat purchased items DTO
-        List<PurchaseResponse.PurchasedItemDto> purchasedItemsDto = purchaseItems.stream()
-                .map(item -> PurchaseResponse.PurchasedItemDto.builder()
+        List<PurchaseResponse.PurchaseItemDto> purchaseItemsDto = purchaseItems.stream()
+                .map(item -> PurchaseResponse.PurchaseItemDto.builder()
                         .productId(String.valueOf(item.getProductId()))
                         .name(item.getName())
                         .category(item.getCategory())
@@ -154,7 +164,7 @@ public class PurchaseService {
 
         return PurchaseResponse.builder()
                 .purchaseId(String.valueOf(purchase.getId()))
-                .purchasedItems(purchasedItemsDto)
+                .purchaseItems(purchaseItemsDto)
                 .totalPrice(totalPrice)
                 .paymentDetails(paymentDetails)
                 .build();

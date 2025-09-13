@@ -13,14 +13,14 @@ import java.util.List;
 @Builder
 public class PurchaseResponse {
     private String purchaseId;
-    private List<PurchasedItemDto> purchasedItems;
+    private List<PurchaseItemDto> purchaseItems;
     private Integer totalPrice;
     private List<PaymentDetailDto> paymentDetails;
 
     @Getter
     @Setter
     @Builder
-    public static class PurchasedItemDto {
+    public static class PurchaseItemDto {
         private String productId;
         private String name;
         private String category;

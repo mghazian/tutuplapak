@@ -32,7 +32,7 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public ResponseEntity<PurchaseResponse> createPurchase(@RequestBody PurchaseRequest request) {
+    public ResponseEntity<PurchaseResponse> createPurchase(@RequestBody @Valid PurchaseRequest request) {
         PurchaseResponse response = purchaseService.createPurchase(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

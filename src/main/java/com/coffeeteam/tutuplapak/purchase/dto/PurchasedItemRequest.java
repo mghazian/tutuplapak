@@ -14,6 +14,5 @@ public class PurchasedItemRequest {
     private String productId;
 
     @NotNull(message = "qty is required")
-    @Min(value = 2, message = "qty must be at least 2")
     private Integer qty;
 }
