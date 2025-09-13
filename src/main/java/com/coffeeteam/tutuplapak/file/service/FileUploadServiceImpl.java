@@ -6,10 +6,10 @@ import com.coffeeteam.tutuplapak.file.dto.UploadResultDto;
 import com.coffeeteam.tutuplapak.file.exception.FileInputInvalidException;
 import com.coffeeteam.tutuplapak.file.model.Image;
 import com.coffeeteam.tutuplapak.file.repository.ImageRepository;
+import com.coffeeteam.tutuplapak.minio.MinioProperties;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -21,13 +21,15 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final ObjectStorageService objectStorageService;
     private final ImageRepository imageRepository;
     private final Tika tika;
+    private final MinioProperties minioProperties;
 
     public FileUploadServiceImpl(
             ObjectStorageService objectStorageService,
-            ImageRepository imageRepository
+            ImageRepository imageRepository, MinioProperties minioProperties
     ) {
         this.objectStorageService = objectStorageService;
         this.imageRepository = imageRepository;
+        this.minioProperties = minioProperties;
         this.tika = new Tika();
     }
 
@@ -82,9 +84,9 @@ public class FileUploadServiceImpl implements FileUploadService {
             imageRepository.save(newImage);
 
             return FileUploadResponseDto.builder()
-                    .fileId("1")
-                    .fileUri(newImage.getUri())
-                    .fileThumbnailUri(newImage.getThumbnailUri())
+                    .fileId(newImage.getId().toString())
+                    .fileUri(String.format("%s/%s/%s", minioProperties.publicEndpoint(), minioProperties.bucket(), newImage.getUri()))
+                    .fileThumbnailUri(String.format("%s/%s/%s", minioProperties.publicEndpoint(), minioProperties.bucket(), newImage.getThumbnailUri()))
                     .build();
         } catch (Exception e) {
             // TODO: Remove uploaded file
