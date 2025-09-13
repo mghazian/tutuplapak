@@ -18,13 +18,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String[] split = username.split("\\|");
+        String[] split = username.split("\\|", -1);
+
+        String email = split.length > 0 ? (split[0].isEmpty() ? null : split[0]) : null;
+        String phone = split.length > 1 ? (split[1].isEmpty() ? null : split[1]) : null;
 
         try {
-            User user = authService.getUserByEmailOrUsername("".equals(split[0]) ? null : split[0], "".equals(split[1]) ? null : split[1]);
+            User user = authService.getUserByEmailOrUsername(email, phone);
             return new CustomUserDetails(user);
         } catch (EntityNotFoundException e) {
             throw new UsernameNotFoundException("User not found", e);
         }
     }
+
 }
