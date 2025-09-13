@@ -26,13 +26,27 @@ services:
       SPRING_DATASOURCE_PASSWORD: app
     depends_on:
       - db
+      - minio
     volumes:
       - ./:/app
       - gradle_project:/app/.gradle
       - gradle_cache:/tmp/gradle
 
+  minio:
+    image: public.ecr.aws/bitnami/minio:latest
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-kopi}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-passwordkopi}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
 
 volumes:
   db_data:
   gradle_project:
   gradle_cache:
+  minio_data:

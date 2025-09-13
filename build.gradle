@@ -27,7 +27,7 @@ repositories {
 dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -45,6 +45,11 @@ dependencies {
 
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.0' // Or the latest version
 	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final' // Or the latest version
+
+	implementation 'io.minio:minio:8.5.17'
+
+	implementation "net.coobird:thumbnailator:0.4.19"
+	implementation "org.apache.tika:tika-core:3.0.0"
 }
 
 tasks.named('test') {
