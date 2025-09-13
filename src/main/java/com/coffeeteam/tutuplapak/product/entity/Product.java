@@ -1,6 +1,7 @@
 package com.coffeeteam.tutuplapak.product.entity;
 
 import com.coffeeteam.tutuplapak.core.entity.User;
+import com.coffeeteam.tutuplapak.file.model.Image;
 import com.coffeeteam.tutuplapak.product.enums.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

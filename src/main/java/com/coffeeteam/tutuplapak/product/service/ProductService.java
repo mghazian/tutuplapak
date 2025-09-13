@@ -1,11 +1,11 @@
 package com.coffeeteam.tutuplapak.product.service;
 
+import com.coffeeteam.tutuplapak.file.model.Image;
+import com.coffeeteam.tutuplapak.file.repository.ImageRepository;
 import com.coffeeteam.tutuplapak.product.dto.ProductCreateRequest;
 import com.coffeeteam.tutuplapak.product.dto.ProductGetRequest;
 import com.coffeeteam.tutuplapak.product.dto.ProductResponse;
-import com.coffeeteam.tutuplapak.product.entity.Image;
 import com.coffeeteam.tutuplapak.product.entity.Product;
-import com.coffeeteam.tutuplapak.product.repository.ImageRepository;
 import com.coffeeteam.tutuplapak.product.repository.ProductRepository;
 import com.coffeeteam.tutuplapak.product.spesification.ProductSpecification;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +33,8 @@ public class ProductService implements IProductService {
     @Override
     public ProductResponse createProduct(Long userId, ProductCreateRequest request) {
 
-        Image image = imageRepository.findById(request.fileId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "File Not Exist"));
+        Image image = imageRepository.findByIdAndOwnerId(request.fileId(), userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "File Not Exist or You are not the owner"));
 
         if (productRepository.existsByOwnerIdAndSku(userId, request.sku())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "SKU already exists for this user");
@@ -78,7 +79,7 @@ public class ProductService implements IProductService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "SKU already exists for this user");
         }
 
-        Image image = imageRepository.findById(request.fileId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "File Not Exist"));
+        Image image = imageRepository.findByIdAndOwnerId(request.fileId(), UserId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "File Not Exist"));
 
         product.setName(request.name());
         product.setCategory(request.category());
