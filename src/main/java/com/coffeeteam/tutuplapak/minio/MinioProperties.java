@@ -9,5 +9,6 @@ public record MinioProperties (
         String accessKey,
         String secretKey,
         boolean secure,
-        long presignExpirySeconds
+        long presignExpirySeconds,
+        String bucket
 ) {}

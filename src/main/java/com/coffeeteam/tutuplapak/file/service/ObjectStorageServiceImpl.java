@@ -23,7 +23,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     private final MinioClient minioClient;
     private final MinioProperties minioProperties;
 
-    private final String BUCKET_NAME = "upload";
+    private final String BUCKET_NAME;
 
     public ObjectStorageServiceImpl(
             MinioClient minioClient,
@@ -31,6 +31,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     ) {
         this.minioClient = minioClient;
         this.minioProperties = minioProperties;
+
+        BUCKET_NAME = minioProperties.bucket();
     }
 
     private String constructObjectName(String filename) {

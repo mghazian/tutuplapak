@@ -48,3 +48,4 @@ minio:
   secretKey: ${MINIO_SECRET_KEY:passwordkopi}
   secure: ${MINIO_SECURE:false}
   presign-expiry-seconds: ${MINIO_PRESIGN_EXPIRY_SECONDS:3600}
+  bucket: upload
