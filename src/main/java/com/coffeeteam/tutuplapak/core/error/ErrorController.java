@@ -38,4 +38,9 @@ public class ErrorController {
                 .body(new ErrorResponse(exception.getMessage()));
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> generalException(Exception exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(exception.getMessage()));
+    }
 }

@@ -21,9 +21,9 @@ public class ProfileService {
         User savedUser = profileRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("user missing"));
         
         return new ProfileResponseBody(
-            savedUser.getEmail(), 
-            savedUser.getPhone(), 
-            savedUser.getImageId().toString(), 
+            savedUser.getEmail() != null ? savedUser.getEmail().toString() : "", 
+            savedUser.getPhone() != null ? savedUser.getPhone().toString() : "", 
+            savedUser.getImageId() != null ? savedUser.getImageId().toString() : "", 
             "", 
             "", 
             savedUser.getBankAccountName(), 
