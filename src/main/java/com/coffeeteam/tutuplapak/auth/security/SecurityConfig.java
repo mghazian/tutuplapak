@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/v1/register/**").permitAll()
                         .requestMatchers("/v1/login/**").permitAll()
+                        .requestMatchers("/v1/purchase/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
