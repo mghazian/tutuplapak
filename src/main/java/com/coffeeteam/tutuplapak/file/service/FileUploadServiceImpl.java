@@ -1,6 +1,6 @@
 package com.coffeeteam.tutuplapak.file.service;
 
-import com.coffeeteam.tutuplapak.file.dto.FileUploadRequestDto;
+import com.coffeeteam.tutuplapak.auth.security.CustomUserDetails;
 import com.coffeeteam.tutuplapak.file.dto.FileUploadResponseDto;
 import com.coffeeteam.tutuplapak.file.dto.UploadResultDto;
 import com.coffeeteam.tutuplapak.file.exception.FileInputInvalidException;
@@ -54,7 +54,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
-    public FileUploadResponseDto upload(MultipartFile file) {
+    public FileUploadResponseDto upload(MultipartFile file, CustomUserDetails userDetails) {
         // Validate file
         if ( ! isFileTypeAcceptable(file) ) {
             throw new FileInputInvalidException("File type is invalid");
@@ -74,7 +74,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             compressedResult = objectStorageService.upload(compressedIs, file.getName() + "-compressed", byteArray.length, file.getContentType());
 
             Image newImage = Image.builder()
-                    .ownerId(1L)
+                    .ownerId(userDetails.user().getId())
                     .uri(result.getObjectName())
                     .thumbnailUri(compressedResult.getObjectName())
                     .build();
