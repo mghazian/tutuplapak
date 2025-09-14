@@ -43,6 +43,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.0' // Or the latest version
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final' // Or the latest version
+
 	implementation 'io.minio:minio:8.5.17'
 
 	implementation "net.coobird:thumbnailator:0.4.19"
