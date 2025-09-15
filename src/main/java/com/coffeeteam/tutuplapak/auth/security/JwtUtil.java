@@ -4,20 +4,16 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.coffeeteam.tutuplapak.auth.UserClaim;
 import com.coffeeteam.tutuplapak.core.entity.User;
-import org.springframework.util.StringUtils;
-
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 public class JwtUtil {
@@ -37,8 +33,6 @@ public class JwtUtil {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userClaim.getId());
-        claims.put("email", userClaim.getEmail());
-        claims.put("phone", userClaim.getPhone());
 
         return Jwts.builder()
                 .subject(userClaim.getId().toString())
@@ -56,27 +50,15 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload();
         return new UserClaim(
-                Long.parseLong(claims.get("id").toString()),
-                Optional.ofNullable(claims.get("phone")).map(Object::toString).orElse(null),
-                Optional.ofNullable(claims.get("email")).map(Object::toString).orElse(null)
+            ((Integer)claims.get("id")).longValue()
         );
     }
 
     public boolean validateToken(String token, UserClaim userClaim, User user) {
         try {
-            if ( userClaim.getEmail() != null && user.getEmail() != null ) {
-                return userClaim.getId().equals(user.getId())
-                    && userClaim.getEmail().equals(user.getEmail())
-                    && !isTokenExpired(token);
-            }
+            if (user == null) return false;
 
-            if ( userClaim.getPhone() != null && user.getPhone() != null ) {
-                return userClaim.getId().equals(user.getId())
-                    && userClaim.getPhone().equals(user.getPhone())
-                    && !isTokenExpired(token);
-            }
-
-            return false;
+            return userClaim.getId() == user.getId() && !isTokenExpired(token);
         } catch (JwtException e) {
             return false;
         }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.coffeeteam.tutuplapak.auth.security.CustomUserDetails;
+import com.coffeeteam.tutuplapak.auth.UserClaim;
 import com.coffeeteam.tutuplapak.file.exception.FileNotFoundException;
 import com.coffeeteam.tutuplapak.profile.dto.EmailLinkRequestBody;
 import com.coffeeteam.tutuplapak.profile.dto.PhoneLinkRequestBody;
@@ -30,39 +30,39 @@ public class ProfileController {
 
     @GetMapping("/user")
     public ResponseEntity<ProfileResponseBody> getProfile(
-        @AuthenticationPrincipal CustomUserDetails userDetails
+        @AuthenticationPrincipal UserClaim userDetails
     ) {
-        ProfileResponseBody body = profileService.getProfile(userDetails.user().getId());
+        ProfileResponseBody body = profileService.getProfile(userDetails.getId());
 
         return ResponseEntity.ok().body(body);
     }
 
     @PutMapping("/user")
     public ResponseEntity<ProfileResponseBody> updateProfile(
-        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @AuthenticationPrincipal UserClaim userDetails,
         @RequestBody @Valid ProfileRequestBody requestBody
     ) throws FileNotFoundException {
-        ProfileResponseBody body = profileService.updateProfile(userDetails.user().getId(), requestBody);
+        ProfileResponseBody body = profileService.updateProfile(userDetails.getId(), requestBody);
 
         return ResponseEntity.ok().body(body);
     }
 
     @PostMapping("/user/link/phone")
     public ResponseEntity<ProfileResponseBody> linkPhone(
-        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @AuthenticationPrincipal UserClaim userDetails,
         @RequestBody @Valid PhoneLinkRequestBody requestBody
     ) throws DataIntegrityViolationException {
-        ProfileResponseBody body = profileService.linkPhone(userDetails.user().getId(), requestBody.getPhone());
+        ProfileResponseBody body = profileService.linkPhone(userDetails.getId(), requestBody.getPhone());
         
         return ResponseEntity.ok().body(body);
     }
 
     @PostMapping("/user/link/email")
     public ResponseEntity<ProfileResponseBody> linkEmail(
-        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @AuthenticationPrincipal UserClaim userDetails,
         @RequestBody @Valid EmailLinkRequestBody requestBody
     ) throws DataIntegrityViolationException {
-        ProfileResponseBody body = profileService.linkEmail(userDetails.user().getId(), requestBody.getEmail());
+        ProfileResponseBody body = profileService.linkEmail(userDetails.getId(), requestBody.getEmail());
         
         return ResponseEntity.ok().body(body);
     }

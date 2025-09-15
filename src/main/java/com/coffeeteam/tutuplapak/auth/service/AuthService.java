@@ -39,9 +39,7 @@ public class AuthService {
 
         User savedUser = authRepository.save(newUser);
         String token = jwtUtil.generateToken(new UserClaim(
-            savedUser.getId(),
-            savedUser.getPhone(),
-            savedUser.getEmail() 
+            savedUser.getId()
         ));
         return new AuthResponseBody(
             savedUser.getEmail(),
@@ -56,9 +54,7 @@ public class AuthService {
                         .orElseThrow(() -> new EntityNotFoundException("user not found"));
         if (!passwordEncoder.matches(requestBody.getPassword(), authUser.getPassword())) throw new InvalidCredentialsException();
         String token = jwtUtil.generateToken(new UserClaim(
-            authUser.getId(),
-            authUser.getPhone(),
-            authUser.getEmail() 
+            authUser.getId()
         ));
         return new AuthResponseBody(
             authUser.getEmail(),
@@ -78,9 +74,7 @@ public class AuthService {
 
         User savedUser = authRepository.save(newUser);
         String token = jwtUtil.generateToken(new UserClaim(
-            savedUser.getId(),
-            savedUser.getPhone(),
-            savedUser.getEmail() 
+            savedUser.getId()
         ));
         return new AuthResponseBody(
             savedUser.getEmail() != null ? savedUser.getEmail() : "",
@@ -95,9 +89,7 @@ public class AuthService {
                         .orElseThrow(() -> new InvalidCredentialsException());
         if (!passwordEncoder.matches(requestBody.getPassword(), authUser.getPassword())) throw new InvalidCredentialsException();
         String token = jwtUtil.generateToken(new UserClaim(
-            authUser.getId(),
-            authUser.getPhone(),
-            authUser.getEmail() 
+            authUser.getId()
         ));
         return new AuthResponseBody(
             authUser.getEmail() != null ? authUser.getEmail() : "",
@@ -106,12 +98,8 @@ public class AuthService {
         );
     }
 
-    public User getUserByEmailOrUsername(String email, String phone) throws EntityNotFoundException {
-        if (email != null && phone != null)
-            return authRepository.findByPhoneAndEmail(phone, email).orElseThrow(EntityNotFoundException::new);
-        if (email != null)
-            return authRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        return authRepository.findByPhone(phone).orElseThrow(EntityNotFoundException::new);
+    public User getUserById(Long id) {
+        return authRepository.findById(id).orElse(null);
     }
 
 }
