@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/v1/register/**").permitAll()
                         .requestMatchers("/v1/login/**").permitAll()
                         .requestMatchers("/v1/purchase/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
