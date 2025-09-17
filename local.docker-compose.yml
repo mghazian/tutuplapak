@@ -33,7 +33,7 @@ services:
       - gradle_cache:/tmp/gradle
 
   minio:
-    image:  minio/minio:latest
+    image: public.ecr.aws/bitnami/minio:latest
     container_name: minio
     command: server /data --console-address ":9001"
     environment:
@@ -46,7 +46,7 @@ services:
       - minio_data:/data
 
   prometheus:
-    image: prom/prometheus:latest
+    image: public.ecr.aws/bitnami/prometheus:latest
     container_name: prometheus
     ports:
       - "9090:9090"
@@ -55,7 +55,7 @@ services:
     restart: unless-stopped
 
   grafana:
-     image: grafana/grafana-enterprise:latest
+     image: public.ecr.aws/bitnami/grafana:latest
      container_name: grafana
      ports:
        - "3000:3000"
