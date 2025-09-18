@@ -42,19 +42,19 @@ public class ProfileService {
         try {
             fileId = Long.parseLong(requestBody.getFileId());
         } catch (NumberFormatException e) {
-            fileId = -1;
+            throw new FileNotFoundException();
         }
-
-        Image image = imageRepository.findById(fileId).orElseThrow(() -> new FileNotFoundException());
 
         User savedUser = profileRepository.findByIdWithImage(userId).orElseThrow(() -> new EntityNotFoundException("user missing"));
 
-        savedUser.setImage(new Image(fileId));
+        Image image = imageRepository.findById(fileId).orElseThrow(() -> new FileNotFoundException());
+
+        savedUser.setImage(image);
         savedUser.setBankAccountName(requestBody.getBankAccountName());
         savedUser.setBankAccountHolder(requestBody.getBankAccountHolder());
         savedUser.setBankAccountNumber(requestBody.getBankAccountNumber());
         User result = profileRepository.save(savedUser);
-        
+
         return new ProfileResponseBody(
             result.getEmail() != null ? result.getEmail() : "", 
             result.getPhone() != null ? result.getPhone() : "", 

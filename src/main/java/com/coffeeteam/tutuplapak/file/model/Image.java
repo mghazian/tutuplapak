@@ -34,8 +34,4 @@ public class Image {
 
     @Column
     ZonedDateTime updatedAt;
-
-    public Image(Long id) {
-        this.id = id;
-    }
 }
