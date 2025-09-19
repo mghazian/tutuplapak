@@ -1,16 +1,22 @@
 package com.coffeeteam.tutuplapak.auth.security;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.coffeeteam.tutuplapak.auth.UserClaim;
@@ -19,8 +25,10 @@ import com.coffeeteam.tutuplapak.core.entity.User;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -28,6 +36,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -59,18 +70,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            User user = authService.getUserByEmailOrUsername(userClaim.getPhone(), userClaim.getEmail());
+            User user = authService.getUserByEmailOrUsername(userClaim.getEmail(), userClaim.getPhone());
 
             if (!jwtUtil.validateToken(jwt, userClaim, user)) {
                 sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
                 return;
             }
 
+            UserDetails userDetails = userDetailsService.loadUserByUsername(Optional.ofNullable(userClaim.getEmail()).orElse("") + "|" + Optional.ofNullable(userClaim.getPhone()).orElse(""));
+
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(userClaim, null, Collections.emptyList());
+                    new UsernamePasswordAuthenticationToken(userDetails, null, Collections.emptyList());
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
-
+        } catch (EntityNotFoundException e) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            return;
         } catch (Exception e) {
             sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             return;
