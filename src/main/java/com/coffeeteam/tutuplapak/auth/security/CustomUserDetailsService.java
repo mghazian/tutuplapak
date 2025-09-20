@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String[] split = username.split("\\|");
+        String[] split = username.split("\\|", -1);
 
         try {
             User user = authService.getUserByEmailOrUsername("".equals(split[0]) ? null : split[0], "".equals(split[1]) ? null : split[1]);

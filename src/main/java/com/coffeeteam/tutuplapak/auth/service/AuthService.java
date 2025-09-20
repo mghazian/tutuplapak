@@ -92,7 +92,7 @@ public class AuthService {
     public AuthResponseBody phoneLogin(PhoneAuthRequestBody requestBody) throws InvalidCredentialsException {
         User authUser = authRepository
                         .findByPhone(requestBody.getPhone())
-                        .orElseThrow(() -> new InvalidCredentialsException());
+                        .orElseThrow(() -> new EntityNotFoundException());
         if (!passwordEncoder.matches(requestBody.getPassword(), authUser.getPassword())) throw new InvalidCredentialsException();
         String token = jwtUtil.generateToken(new UserClaim(
             authUser.getId(),
