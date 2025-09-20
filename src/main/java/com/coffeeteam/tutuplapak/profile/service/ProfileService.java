@@ -40,6 +40,7 @@ public class ProfileService {
     public ProfileResponseBody updateProfile(Long userId, ProfileRequestBody requestBody) throws FileNotFoundException {
         long fileId;
         try {
+            System.out.println("masuk fileid parse" + requestBody.getFileId());
             fileId = Long.parseLong(requestBody.getFileId());
         } catch (NumberFormatException e) {
             throw new FileNotFoundException();
