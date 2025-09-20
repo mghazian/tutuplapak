@@ -8,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -28,16 +27,20 @@ public class User {
     private String password;
 
     @Column(name = "bank_account_name", nullable = false)
+    @Builder.Default()
     private String bankAccountName = "";
 
     @Column(name = "bank_account_holder", nullable = false)
+    @Builder.Default()
     private String bankAccountHolder = "";
 
     @Column(name = "bank_account_number", nullable = false)
+    @Builder.Default()
     private String bankAccountNumber = "";
 
-    @Column(name = "image_id")
-    private Long imageId;
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
