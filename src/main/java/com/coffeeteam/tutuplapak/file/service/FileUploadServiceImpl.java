@@ -76,16 +76,16 @@ public class FileUploadServiceImpl implements FileUploadService {
             compressedResult = objectStorageService.upload(compressedIs, file.getName() + "-compressed", byteArray.length, file.getContentType());
 
             Image newImage = Image.builder()
-                    .uri(result.getObjectName())
-                    .thumbnailUri(compressedResult.getObjectName())
+                    .uri(String.format("%s/%s/%s", minioProperties.publicEndpoint(), minioProperties.bucket(), result.getObjectName()))
+                    .thumbnailUri(String.format("%s/%s/%s", minioProperties.publicEndpoint(), minioProperties.bucket(), compressedResult.getObjectName()))
                     .build();
 
             imageRepository.save(newImage);
 
             return FileUploadResponseDto.builder()
                     .fileId(newImage.getId().toString())
-                    .fileUri(String.format("%s/%s/%s", minioProperties.publicEndpoint(), minioProperties.bucket(), newImage.getUri()))
-                    .fileThumbnailUri(String.format("%s/%s/%s", minioProperties.publicEndpoint(), minioProperties.bucket(), newImage.getThumbnailUri()))
+                    .fileUri(newImage.getUri())
+                    .fileThumbnailUri(newImage.getThumbnailUri())
                     .build();
         } catch (Exception e) {
             // TODO: Remove uploaded file
