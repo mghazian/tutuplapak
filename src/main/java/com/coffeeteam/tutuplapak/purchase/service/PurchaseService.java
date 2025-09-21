@@ -47,7 +47,7 @@ public class PurchaseService {
                         .purchaseId(purchase.getId())
                         .productId(product.getId())
                         .name(product.getName())
-                        .category(product.getCategory())
+                        .category(product.getCategory().getDisplayName())
                         .qty(purchasedItemRequest.getQty())
                         .price(product.getPrice())
                         .sku(product.getSku())

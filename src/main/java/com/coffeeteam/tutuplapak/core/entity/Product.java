@@ -1,6 +1,7 @@
 package com.coffeeteam.tutuplapak.core.entity;
 
 import com.coffeeteam.tutuplapak.file.model.Image;
+import com.coffeeteam.tutuplapak.product.enums.Category;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,7 +29,8 @@ public class Product {
     private Long ownerId;
 
     @Column(nullable = false)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @Column(nullable = false)
     private Integer qty;
