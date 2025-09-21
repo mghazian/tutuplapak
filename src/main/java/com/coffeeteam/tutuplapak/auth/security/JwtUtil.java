@@ -37,8 +37,6 @@ public class JwtUtil {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userClaim.getId());
-        claims.put("email", userClaim.getEmail());
-        claims.put("phone", userClaim.getPhone());
 
         return Jwts.builder()
                 .subject(userClaim.getId().toString())
@@ -63,23 +61,7 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token, UserClaim userClaim, User user) {
-        try {
-            if ( userClaim.getEmail() != null && user.getEmail() != null ) {
-                return userClaim.getId().equals(user.getId())
-                        && userClaim.getEmail().equals(user.getEmail())
-                        && !isTokenExpired(token);
-            }
-
-            if ( userClaim.getPhone() != null && user.getPhone() != null ) {
-                return userClaim.getId().equals(user.getId())
-                        && userClaim.getPhone().equals(user.getPhone())
-                        && !isTokenExpired(token);
-            }
-
-            return false;
-        } catch (JwtException e) {
-            return false;
-        }
+        return userClaim.getId().equals(user.getId()) && !isTokenExpired(token);
     }
 
 

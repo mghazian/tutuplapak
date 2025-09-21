@@ -14,6 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserClaim {
     private Long id;
+
+    @Deprecated
     private String phone;
+
+    @Deprecated
     private String email;
 }

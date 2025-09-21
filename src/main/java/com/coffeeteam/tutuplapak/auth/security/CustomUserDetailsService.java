@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+@Deprecated
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -18,13 +19,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String[] split = username.split("\\|", -1);
-
-        String email = split.length > 0 ? (split[0].isEmpty() ? null : split[0]) : null;
-        String phone = split.length > 1 ? (split[1].isEmpty() ? null : split[1]) : null;
-
         try {
-            User user = authService.getUserByEmailOrUsername(email, phone);
+            User user = authService.getUserById(Long.parseLong(username));
             return new CustomUserDetails(user);
         } catch (EntityNotFoundException e) {
             throw new UsernameNotFoundException("User not found", e);
