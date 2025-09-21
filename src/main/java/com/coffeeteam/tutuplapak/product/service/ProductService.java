@@ -2,6 +2,7 @@ package com.coffeeteam.tutuplapak.product.service;
 
 import com.coffeeteam.tutuplapak.core.entity.Product;
 import com.coffeeteam.tutuplapak.core.repository.ProductRepository;
+import com.coffeeteam.tutuplapak.file.exception.FileNotFoundException;
 import com.coffeeteam.tutuplapak.file.model.Image;
 import com.coffeeteam.tutuplapak.file.repository.ImageRepository;
 import com.coffeeteam.tutuplapak.product.dto.ProductCreateRequest;
@@ -32,8 +33,15 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductResponse createProduct(Long userId, ProductCreateRequest request) {
+        long fileId;
+        try {
+            System.out.println("masuk fileid parse" + request.getFileId());
+            fileId = Long.parseLong(request.getFileId());
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File Not Exist or You are not the owner");
+        }
 
-        Image image = imageRepository.findById(request.fileId())
+        Image image = imageRepository.findById(fileId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "File Not Exist or You are not the owner"));
 
         if (productRepository.existsByOwnerIdAndSku(userId, request.sku())) {
@@ -70,8 +78,15 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductResponse update(Long UserId, Long productId, ProductCreateRequest request) {
-        Product product = productRepository.findByIdAndOwnerId(productId, UserId)
+    public ProductResponse update(Long UserId, String productId, ProductCreateRequest request) {
+        long productIdLong;
+        try {
+            productIdLong = Long.parseLong(productId);
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found");
+        }
+
+        Product product = productRepository.findByIdAndOwnerId(productIdLong, UserId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found"));
 
         if (!product.getSku().equals(request.sku()) &&
@@ -79,7 +94,15 @@ public class ProductService implements IProductService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "SKU already exists for this user");
         }
 
-        Image image = imageRepository.findById(request.fileId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "File Not Exist"));
+        long fileId;
+        try {
+            System.out.println("masuk fileid parse" + request.getFileId());
+            fileId = Long.parseLong(request.getFileId());
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File Not Exist or You are not the owner");
+        }
+
+        Image image = imageRepository.findById(fileId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "File Not Exist"));
 
         product.setName(request.name());
         product.setCategory(request.category());

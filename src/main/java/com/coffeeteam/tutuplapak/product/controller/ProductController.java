@@ -41,7 +41,7 @@ public class ProductController {
 
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponse> update(
-            @PathVariable @NotNull Long productId,
+            @PathVariable @NotNull String productId,
             @Valid @RequestBody ProductCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails claim
     ) {

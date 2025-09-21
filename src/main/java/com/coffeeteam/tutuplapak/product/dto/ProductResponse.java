@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 public record ProductResponse(
-        Long productId,
+        String productId,
         String name,
         String category,
         Integer qty,
         Integer price,
         String sku,
-        Long fileId,
+        String fileId,
         String fileUri,
         String fileThumbnailUri,
         ZonedDateTime createdAt,
@@ -22,13 +22,13 @@ public record ProductResponse(
 ) {
     public static ProductResponse fromEntity(Product product) {
         return new ProductResponse(
-                product.getId(),
+                product.getId().toString(),
                 product.getName(),
                 StringUtils.capitalize(product.getCategory().name().toLowerCase()),
                 product.getQty(),
                 product.getPrice(),
                 product.getSku(),
-                product.getImage().getId(),
+                product.getImage().getId().toString(),
                 product.getImage().getUri(),
                 product.getImage().getThumbnailUri(),
                 product.getCreatedAt(),

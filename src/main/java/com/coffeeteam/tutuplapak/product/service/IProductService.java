@@ -9,6 +9,6 @@ import java.util.List;
 public interface IProductService {
     ProductResponse createProduct(Long userId, ProductCreateRequest request);
     List<ProductResponse> getAllProducts(ProductGetRequest request);
-    ProductResponse update(Long userId, Long productId, ProductCreateRequest request);
+    ProductResponse update(Long userId, String productId, ProductCreateRequest request);
     void delete(Long UserId, Long productId);
 }
