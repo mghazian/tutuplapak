@@ -66,14 +66,14 @@ public class JwtUtil {
         try {
             if ( userClaim.getEmail() != null && user.getEmail() != null ) {
                 return userClaim.getId().equals(user.getId())
-                    && userClaim.getEmail().equals(user.getEmail())
-                    && !isTokenExpired(token);
+                        && userClaim.getEmail().equals(user.getEmail())
+                        && !isTokenExpired(token);
             }
 
             if ( userClaim.getPhone() != null && user.getPhone() != null ) {
                 return userClaim.getId().equals(user.getId())
-                    && userClaim.getPhone().equals(user.getPhone())
-                    && !isTokenExpired(token);
+                        && userClaim.getPhone().equals(user.getPhone())
+                        && !isTokenExpired(token);
             }
 
             return false;
