@@ -76,7 +76,6 @@ public class FileUploadServiceImpl implements FileUploadService {
             compressedResult = objectStorageService.upload(compressedIs, file.getName() + "-compressed", byteArray.length, file.getContentType());
 
             Image newImage = Image.builder()
-                    .ownerId(userDetails.user().getId())
                     .uri(result.getObjectName())
                     .thumbnailUri(compressedResult.getObjectName())
                     .build();
