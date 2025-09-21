@@ -8,6 +8,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -66,6 +67,9 @@ public class PurchaseController {
                 PurchaseResponse response = purchaseService.createPurchase(request);
                 purchaseCreatedCounter.increment();
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            } catch (IllegalArgumentException e) {
+                purchaseValidationErrorCounter.increment();
+                return ResponseEntity.badRequest().build();
             } catch (Exception e) {
                 purchaseInternalServerErrorCounter.increment();
                 throw e;
@@ -75,7 +79,7 @@ public class PurchaseController {
 
     @PostMapping("/{purchaseId}")
     public ResponseEntity<Void> uploadPaymentProof(
-            @PathVariable Long purchaseId,
+            @PathVariable String purchaseId,
             @RequestBody @Valid PaymentProofRequest request) {
 
         return paymentProofUploadTimer.record(() -> {
@@ -83,6 +87,9 @@ public class PurchaseController {
                 purchaseService.uploadPaymentProof(purchaseId, request);
                 paymentProofUploadedCounter.increment();
                 return ResponseEntity.status(HttpStatus.CREATED).build();
+            } catch (EntityNotFoundException e) {
+                purchaseValidationErrorCounter.increment();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             } catch (IllegalArgumentException e) {
                 purchaseValidationErrorCounter.increment();
                 return ResponseEntity.badRequest().build();

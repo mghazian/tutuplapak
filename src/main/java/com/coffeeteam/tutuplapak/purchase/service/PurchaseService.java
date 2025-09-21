@@ -3,12 +3,15 @@ package com.coffeeteam.tutuplapak.purchase.service;
 
 import com.coffeeteam.tutuplapak.core.entity.*;
 import com.coffeeteam.tutuplapak.core.repository.*;
+import com.coffeeteam.tutuplapak.file.exception.FileNotFoundException;
 import com.coffeeteam.tutuplapak.file.model.Image;
 import com.coffeeteam.tutuplapak.file.repository.ImageRepository;
 import com.coffeeteam.tutuplapak.purchase.dto.PaymentProofRequest;
 import com.coffeeteam.tutuplapak.purchase.dto.PurchaseRequest;
 import com.coffeeteam.tutuplapak.purchase.dto.PurchaseResponse;
 import com.coffeeteam.tutuplapak.purchase.dto.PurchasedItemRequest;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -166,15 +169,22 @@ public class PurchaseService {
 
         return PurchaseResponse.builder()
                 .purchaseId(String.valueOf(purchase.getId()))
-                .purchaseItems(purchaseItemsDto)
+                .purchasedItems(purchaseItemsDto)
                 .totalPrice(totalPrice)
                 .paymentDetails(paymentDetails)
                 .build();
     }
 
-    public void uploadPaymentProof(Long purchaseId, PaymentProofRequest request) {
-        Purchase purchase = purchaseRepository.findById(purchaseId)
-                .orElseThrow(() -> new IllegalArgumentException("Purchase not found"));
+    public void uploadPaymentProof(String purchaseId, PaymentProofRequest request) {
+        long purchaseIdLong;
+        try {
+            purchaseIdLong = Long.parseLong(purchaseId);
+        } catch (NumberFormatException e) {
+            throw new EntityNotFoundException("Purchase not found");
+        }
+     
+        Purchase purchase = purchaseRepository.findById(purchaseIdLong)
+                .orElseThrow(() -> new EntityNotFoundException("Purchase not found"));
 
         List<Long> imageIds = request.getFileIds().stream()
                 .map(Long::valueOf)

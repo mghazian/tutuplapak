@@ -10,5 +10,5 @@ public interface IProductService {
     ProductResponse createProduct(Long userId, ProductCreateRequest request);
     List<ProductResponse> getAllProducts(ProductGetRequest request);
     ProductResponse update(Long userId, String productId, ProductCreateRequest request);
-    void delete(Long UserId, Long productId);
+    void delete(Long UserId, String productId);
 }

@@ -116,8 +116,15 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void delete(Long UserId, Long productId) {
-        Product product = productRepository.findByIdAndOwnerId(productId, UserId)
+    public void delete(Long UserId, String productId) {
+        long productIdLong;
+        try {
+            productIdLong = Long.parseLong(productId);
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found");
+        }
+
+        Product product = productRepository.findByIdAndOwnerId(productIdLong, UserId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found or You are not the owner"));
         productRepository.delete(product);
     }

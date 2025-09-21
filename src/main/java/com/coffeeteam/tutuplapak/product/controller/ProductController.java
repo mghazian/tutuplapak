@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> delete(@PathVariable @NotNull Long productId, @AuthenticationPrincipal CustomUserDetails claim) {
+    public ResponseEntity<Void> delete(@PathVariable @NotNull String productId, @AuthenticationPrincipal CustomUserDetails claim) {
         productService.delete(claim.user().getId(),productId);
         return ResponseEntity.ok().build();
     }

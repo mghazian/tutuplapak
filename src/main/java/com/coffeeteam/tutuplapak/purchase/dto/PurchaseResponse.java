@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class PurchaseResponse {
     private String purchaseId;
-    private List<PurchaseItemDto> purchaseItems;
+    private List<PurchaseItemDto> purchasedItems;
     private Integer totalPrice;
     private List<PaymentDetailDto> paymentDetails;
 

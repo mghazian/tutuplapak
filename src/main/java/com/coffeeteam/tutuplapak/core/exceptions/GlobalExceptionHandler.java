@@ -21,37 +21,37 @@ import jakarta.persistence.EntityNotFoundException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleNotValid(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body is invalid");
+    public ResponseEntity<ErrorResponse> handleNotValid(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Request body is invalid"));
     }
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<String> handleNoResourceFoundException(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body is invalid");
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Request body is invalid"));
     }
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<String> handleMethodArgumentTypeMismatchException(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body is invalid");
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Request body is invalid"));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleNotReadableException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleNotReadableException(Exception e) {
         e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body is invalid");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Request body is invalid"));
     }
 
     @ExceptionHandler(InvalidDataAccessApiUsageException.class)
-    public ResponseEntity<String> handleInvalidDataAccessApiUsageException(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body is invalid");
+    public ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Request body is invalid"));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleUniqueConflict(DataIntegrityViolationException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("data already taken");
+    public ResponseEntity<ErrorResponse> handleUniqueConflict(DataIntegrityViolationException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse("data already taken"));
     }
 
     @ExceptionHandler(ConflictException.class)
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGeneralException(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Internal server error"));
     }
 }
