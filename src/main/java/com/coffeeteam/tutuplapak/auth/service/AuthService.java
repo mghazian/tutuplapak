@@ -106,12 +106,17 @@ public class AuthService {
         );
     }
 
+    @Deprecated
     public User getUserByEmailOrUsername(String email, String phone) throws EntityNotFoundException {
         if (email != null && phone != null)
             return authRepository.findByPhoneAndEmail(phone, email).orElseThrow(EntityNotFoundException::new);
         if (email != null)
             return authRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         return authRepository.findByPhone(phone).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public User getUserById(Long id) throws EntityNotFoundException {
+        return authRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
 }
